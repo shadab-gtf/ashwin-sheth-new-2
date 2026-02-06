@@ -1,0 +1,31 @@
+ Volume in drive C has no label.
+ Volume Serial Number is 16B9-0D1C
+
+ Directory of c:\shadab-2026\ashwinshethnew-2\src\components\sections
+
+06/02/2026  14:16    <DIR>          .
+06/02/2026  14:16    <DIR>          ..
+05/02/2026  17:11            15,959 Blogsection.tsx
+05/02/2026  15:10             6,658 BrandUnfoldedSection.tsx
+06/02/2026  12:11             1,561 createProjectsTimeline.ts
+03/02/2026  10:44             3,343 Earthcentersection.tsx
+06/02/2026  12:01             6,120 Earthintrosection.tsx
+06/02/2026  14:41            11,896 Earthsplitsection.tsx
+06/02/2026  12:28            15,161 Footer.tsx
+05/02/2026  15:23               839 GlobeWrapper.tsx
+06/02/2026  12:58            28,885 Horizontalslider.tsx
+06/02/2026  12:53             8,473 Horizontalslidersection.tsx
+05/02/2026  12:54             4,187 Introsection.tsx
+05/02/2026  17:52             7,683 Projects.tsx
+06/02/2026  14:09            25,629 ProjectSection.tsx
+05/02/2026  12:01             2,594 ProjectSection2.tsx
+05/02/2026  12:21             5,199 ProjectSection3.tsx
+05/02/2026  12:02             5,085 ProjectSection4.tsx
+06/02/2026  12:11             9,502 ProjectsNew.tsx
+04/02/2026  17:43            13,429 Timeline.tsx
+03/02/2026  09:56             1,824 TransitionWrapper.tsx
+05/02/2026  12:05             7,063 Videosection2.tsx
+06/02/2026  14:34             7,087 Videosection3.tsx
+03/02/2026  10:40             3,326 VideoStage.tsx
+              22 File(s)        191,503 bytes
+               2 Dir(s)  215,597,129,728 bytes free
