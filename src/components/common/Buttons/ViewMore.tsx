@@ -19,10 +19,10 @@ const ViewMore: React.FC<ViewMoreProps> = ({
     >
       {text}
 
-      <span className="icon-wrap">
+      {/* <span className="icon-wrap">
         <GoArrowRight className="arrow arrow-1" />
         <GoArrowRight className="arrow arrow-2" />
-      </span>
+      </span> */}
     </Link>
   );
 };
