@@ -442,7 +442,7 @@ export default function ProjectSection({ projectRef }: ProjectSectionProps) {
 
         {/* ── Project Card - Right Aligned ── */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 right-[5%] md:right-[5%]
+          className="absolute top-1/2 -translate-y-1/2 right-[5%] md:right-[8%] 2xl:right-[10%] 
                      bg-white/95 backdrop-blur-md
                      w-[400px] 
                      max-h-[65vh]
@@ -450,10 +450,10 @@ export default function ProjectSection({ projectRef }: ProjectSectionProps) {
                      border border-white/20"
         >
           {/* Card Inner Container */}
-          <div className="h-full flex flex-col p-2 ">
+          <div className="h-full flex flex-col p-6">
 
             {/* Header */}
-            {/* <div className="mb-6">
+            <div className="mb-6">
               <Heading className="!text-[11px] !leading-[16px] tracking-[0.25em] uppercase text-black/60 mb-1">
                 Key Projects
               </Heading>
@@ -462,7 +462,7 @@ export default function ProjectSection({ projectRef }: ProjectSectionProps) {
                 <span className="opacity-40">—</span>
                 <span className="opacity-60">{String(PROJECTS.length).padStart(2, "0")}</span>
               </div>
-            </div> */}
+            </div>
 
             {/* Title & Location */}
 
@@ -485,39 +485,37 @@ export default function ProjectSection({ projectRef }: ProjectSectionProps) {
                 </div>
               ))}
 
-            </div>
-            <div className="w-full relative h-[150px] flex flex-col items-center justify-between overflow-hidden">
-
-              {/* Dots */}
-              <div className="flex gap-2 mt-2">
+              {/* Image Dots Indicator */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
                 {PROJECTS.map((_, i) => (
                   <div
                     key={i}
-                    className={`h-2 w-2 rounded-full transition-colors duration-300 ${i === activeIndex ? "bg-blue-600" : "bg-black/40"
+                    className={`h-1 rounded-full transition-all duration-500 ${i === activeIndex
+                      ? "w-6 bg-blue-400"
+                      : "w-1 bg-white"
                       }`}
                   />
                 ))}
               </div>
-
-              {/* Text */}
-              <div className="flex flex-col items-center text-center">
-                <h2 className="text-black text-[28px] font-light tracking-tight leading-none mb-2">
-                  {PROJECTS[activeIndex].title}
-                </h2>
-                <p className="text-black/70 text-[12px] tracking-[0.25em] uppercase font-light">
-                  {PROJECTS[activeIndex].location}
-                </p>
-              </div>
-
-              {/* Button */}
-              <ViewMore
-                link={PROJECTS[activeIndex].slug}
-                text="View Project"
-                className="text-[14px] text-blue-600 tracking-[0.25em] uppercase font-medium mb-2"
-              />
-
             </div>
-
+            <div className="w-full relative h-[50px] overflow-hidden mb-3">
+              {PROJECTS.map((project, i) => (
+                <div
+                  key={`text-${i}`}
+                  data-project-title-wrap={i}
+                  className="absolute inset-0 flex flex-col justify-center"
+                >
+                  <div data-project-title>
+                    <h2 className="text-black text-[26px] font-light tracking-tight leading-none mb-2">
+                      {project.title}
+                    </h2>
+                    <p className="text-black/70 text-[12px] tracking-[0.2em] uppercase font-light">
+                      {project.location}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
             {/* Description */}
             {/* <div className="w-full relative h-[90px] md:h-[100px] overflow-hidden mb-6 flex-grow">
               {PROJECTS.map((project, i) => (
@@ -537,7 +535,11 @@ export default function ProjectSection({ projectRef }: ProjectSectionProps) {
             </div> */}
 
             {/* CTA Button */}
-
+            <ViewMore
+              link={PROJECTS[activeIndex].slug}
+              text="View Project"
+              className="w-full md:w-auto text-[13px] md:text-[14px] tracking-wider"
+            />
           </div>
         </div>
       </div>
