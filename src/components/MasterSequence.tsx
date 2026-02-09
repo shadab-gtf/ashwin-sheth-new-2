@@ -24,11 +24,11 @@ gsap.registerPlugin(ScrollTrigger);
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const T = {
-  REVEAL: 1.4,
+  REVEAL: 1.2,
   FADE: 0.2,
   CONTENT_DELAY: 0.6,
   TEXT_DELAY: 0.8,
-  HOLD: 1.2,
+  HOLD: 0.2,
   GAP: 1,
   SPLIT_DELAY: 0.3,
 } as const;
@@ -62,7 +62,7 @@ const VIDEO_TRANSITIONS = [
   },
 ];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ──
 
 const resolve = (refs: any, path: string): HTMLDivElement | null =>
   path.split(".").reduce((o, k) => o?.[k], refs)?.current ?? null;
@@ -131,7 +131,7 @@ function buildVideoTransitions(tl: gsap.core.Timeline, refs: RefMap, setActiveVi
 function buildVisionSequence(tl: gsap.core.Timeline, refs: RefMap, setActiveVideo: (v: number) => void) {
   const { gridContent, stats, circleWhite2 } = refs.earthSplit;
 
-  // Vision Section Reveal
+  // Vision Section Reveal - BLACK HEADER
   tl.addLabel("vision_reveal").call(() => { setHeader("black"); setActiveVideo(-1); }, undefined, "vision_reveal");
 
   // Fade out Video 3 elements
@@ -163,6 +163,9 @@ function buildVisionSequence(tl: gsap.core.Timeline, refs: RefMap, setActiveVide
 }
 
 function buildSlider(tl: gsap.core.Timeline, refs: RefMap) {
+  // BLACK HEADER for slider section
+  tl.call(() => setHeader("black"), undefined, "before_slider");
+
   // Reveal Horizontal Slider with Circle (Beige)
   if (refs.slider.circleFinal.current) {
     createExactCircleReveal(tl, refs.slider.circleFinal.current, "before_slider", {
@@ -182,8 +185,8 @@ function buildProjectSection(tl: gsap.core.Timeline, refs: RefMap) {
   const projectSection = refs.project.section.current;
   const circleReveal = refs.project.circleReveal.current;
 
-  // ── Transition: slider → projects ──
-  tl.addLabel("project_reveal").call(() => setHeader("white"), undefined, "project_reveal");
+  // ── Transition: slider → projects - BLACK HEADER ──
+  tl.addLabel("project_reveal").call(() => setHeader("black"), undefined, "project_reveal");
 
   // Fade out slider
   if (refs.slider.slider.current) {
@@ -216,7 +219,7 @@ function buildProjectSection(tl: gsap.core.Timeline, refs: RefMap) {
 }
 
 function buildBlogBrandFooter(tl: gsap.core.Timeline, refs: RefMap) {
-  // ── Blog ──
+  // ── Blog - BLACK HEADER ──
   tl.addLabel("blog_reveal").call(() => setHeader("black"), undefined, "blog_reveal");
 
   // Fade out projects
@@ -234,7 +237,7 @@ function buildBlogBrandFooter(tl: gsap.core.Timeline, refs: RefMap) {
   });
   gap(tl, 2.5);
 
-  // ── Brand ──
+  // ── Brand - BLACK HEADER ──
   tl.addLabel("brand_reveal").call(() => setHeader("black"), undefined, "brand_reveal");
   if (refs.blog.blog.current) {
     tl.to(refs.blog.blog.current, {
@@ -249,7 +252,7 @@ function buildBlogBrandFooter(tl: gsap.core.Timeline, refs: RefMap) {
   });
   gap(tl, 2.0);
 
-  // ── Footer ──
+  // ── Footer - BLACK HEADER ──
   tl.addLabel("footer_reveal").call(() => setHeader("black"), undefined, "footer_reveal");
   fadeOut(tl, [refs.brand.brand.current], "footer_reveal");
   if (refs.footer.footer.current) {
