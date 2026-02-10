@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import VideoStage from '@/components/sections/VideoStage';
 import { createCircleReveal } from '@/utils/Circlereveal';
 
-const VIDEO_2 = "/videos/Video2.mp4";
+const VIDEO_2 = "/videos/2.mp4";
 const TEXT_2 = "Warm tones filled with light and comfort.";
 
 interface VideoSection2Props {
@@ -44,12 +44,12 @@ export function createVideo2Timeline(
         ease: 'power4.out'
     }, 'v1_to_v2');
 
-        createCircleReveal(
-            scrollTL,
-            refs.circleGreen.current!,
-            '#86efad56',
-            'v1_to_v2'
-        );
+    createCircleReveal(
+        scrollTL,
+        refs.circleGreen.current!,
+        '#86efad56',
+        'v1_to_v2'
+    );
 
     scrollTL.to(refs.text2.current, {
         opacity: 1,

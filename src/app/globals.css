@@ -7,6 +7,19 @@
   --color-accent: var(--accent);
 
   --ease-premium: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --animate-fadeIn: fadeIn 0.5s ease-out forwards;
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 :root {

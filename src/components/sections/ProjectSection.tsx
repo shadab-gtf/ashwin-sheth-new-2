@@ -35,13 +35,13 @@ const PROJECTS: Project[] = [
     slug: "/projects/sheth-avalon",
     location: "Thane",
     image: "/assets/images/projects/project-2.webp",
-    mobile_image: "/assets/images/projects/mobile/project-2.webp",
+    mobile_image: "/assets/project-card/av1.jpg",
     gallery: [
-      "/assets/images/projects/project-2.webp",
-      "/assets/images/projects/project-3.webp",
-      "/assets/images/projects/project-4.webp",
-      "/assets/images/projects/project-5.webp",
-      "/assets/images/projects/project-2.webp",
+      "/assets/project-card/av1.jpg",
+      "/assets/project-card/av2.jpg",
+      "/assets/project-card/av3.jpg",
+      // "/assets/project-card/av4.jpg",
+      // "/assets/project-card/av5.jpg",
     ],
     alt: "Project 2",
     description:
@@ -52,13 +52,13 @@ const PROJECTS: Project[] = [
     slug: "/projects/sheth-edmont",
     location: "Kandivali West",
     image: "/assets/images/projects/project-3.webp",
-    mobile_image: "/assets/images/projects/mobile/project-3.webp",
+    mobile_image: "/assets/project-card/ed4.jpg",
     gallery: [
-      "/assets/images/projects/project-3.webp",
-      "/assets/images/projects/project-4.webp",
-      "/assets/images/projects/project-5.webp",
-      "/assets/images/projects/project-2.webp",
-      "/assets/images/projects/project-3.webp",
+      "/assets/project-card/ed1.jpg",
+      "/assets/project-card/ed2.jpg",
+      "/assets/project-card/ed3.jpg",
+      "/assets/project-card/ed4.jpg",
+      // "/assets/project-card/ed5.jpg",
     ],
     alt: "Project 3",
     description:
@@ -69,13 +69,13 @@ const PROJECTS: Project[] = [
     slug: "/projects/sheth-vasant",
     location: "Thane West",
     image: "/assets/images/projects/project-4.webp",
-    mobile_image: "/assets/images/projects/mobile/project-4.webp",
+    mobile_image: "/assets/project-card/fern.jpg",
     gallery: [
-      "/assets/images/projects/project-4.webp",
-      "/assets/images/projects/project-5.webp",
-      "/assets/images/projects/project-2.webp",
-      "/assets/images/projects/project-3.webp",
-      "/assets/images/projects/project-4.webp",
+      "/assets/project-card/fern.jpg",
+      // "/assets/project-card/fe2.jpg",
+      // "/assets/project-card/fe3.jpg",
+      // "/assets/project-card/fe4.jpg",
+      // "/assets/project-card/fe5.jpg",
     ],
     alt: "Project 4",
     description:
@@ -86,13 +86,13 @@ const PROJECTS: Project[] = [
     slug: "/projects/sheth-vasant",
     location: "Marine Drive",
     image: "/assets/images/projects/project-5.webp",
-    mobile_image: "/assets/images/projects/mobile/project-5.webp",
+    mobile_image: "/assets/project-card/m1.jpg",
     gallery: [
-      "/assets/images/projects/project-5.webp",
-      "/assets/images/projects/project-2.webp",
-      "/assets/images/projects/project-3.webp",
-      "/assets/images/projects/project-4.webp",
-      "/assets/images/projects/project-5.webp",
+      "/assets/project-card/m1.jpg",
+      "/assets/project-card/m2.jpg",
+      "/assets/project-card/m3.jpg",
+      "/assets/project-card/m4.jpg",
+      // "/assets/project-card/m5.jpg",
     ],
     alt: "Project 4",
     description:
@@ -155,13 +155,6 @@ function ProjectGallery({ images, isActive, onIndexChange }: { images: string[];
     gsap.set(currentSlide, { zIndex: 2 });
     if (prevSlide) gsap.set(prevSlide, { zIndex: 1 });
 
-    // 2. Animate clip-path from Right-to-Left (reveal)
-    // Starting state: clipped from the right (inset(0 0 0 100%)) or similar logic
-    // Actually, "slide right to left" usually means image moves right to left?
-    // OR wipe right to left?
-    // "Clip path to slide smoothly right to left" -> Wipe reveal from right to left?
-    // Let's do a reveal from right: inset(0 0 0 100%) -> inset(0 0 0 0%)
-
     // Reset current slide to hidden state (clipped from right)
     tl.fromTo(
       currentSlide,
@@ -191,18 +184,20 @@ function ProjectGallery({ images, isActive, onIndexChange }: { images: string[];
           ref={(el) => { if (el) slidesRef.current[i] = el; }}
           className="absolute inset-0 w-full h-full"
           style={{
-            zIndex: i === 0 ? 1 : 0, // First image starts visible
-            clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 0% 100%)", // First visible, others hidden
+            zIndex: i === 0 ? 1 : 0,
+            clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 0% 100%)",
           }}
         >
           <Image
             src={src}
             alt="Gallery Property"
-            fill
-            className="object-cover"
+            quality={100}
+            width={1920}
+            height={1080}
+            className="object-cover w-full h-full"
             priority={i === 0}
           />
-          {/* Gradient Overlay for text readability (optional) */}
+
           <div className="absolute inset-0 bg-black/10" />
         </div>
       ))}
@@ -443,7 +438,7 @@ export function createProjectObserver(
     dispatchIndex(nextIndex);
 
     const tl = gsap.timeline({
-      defaults: { ease: "power3.inOut" },
+      defaults: { ease: "expo.inOut", duration: 1.2 },
       onComplete: () => {
         isAnimating = false;
       },
@@ -451,7 +446,6 @@ export function createProjectObserver(
 
     // ── Background Clip Path Transition ──
     if (direction === 1) {
-      // Forward: reveal next layer from bottom to top
       if (clipContainers[nextIndex]) {
         tl.to(
           clipContainers[nextIndex],
@@ -464,7 +458,7 @@ export function createProjectObserver(
         );
       }
     } else {
-      // Backward: hide current layer from top to bottom
+      // Backward
       if (clipContainers[prevIndex]) {
         tl.to(
           clipContainers[prevIndex],
@@ -520,8 +514,9 @@ export function createProjectObserver(
     target: section,
     type: "wheel,touch,pointer",
     wheelSpeed: -1,
-    tolerance: 10,
+    tolerance: 15,
     dragMinimum: 5,
+    preventDefault: true,
     onUp: () => {
       goToProject(currentIndex - 1);
     },
@@ -530,10 +525,10 @@ export function createProjectObserver(
     },
 
     onChange: (self) => {
-      if (currentIndex === 0 && self.deltaY < 0) {
+      if (currentIndex === 0 && self.deltaY < -20) {
         window.dispatchEvent(new CustomEvent("project-boundary", { detail: "start" }));
       }
-      if (currentIndex === PROJECTS.length - 1 && self.deltaY > 0) {
+      if (currentIndex === PROJECTS.length - 1 && self.deltaY > 20) {
         window.dispatchEvent(new CustomEvent("project-boundary", { detail: "end" }));
       }
     },
@@ -542,9 +537,6 @@ export function createProjectObserver(
   return observer;
 }
 
-// ─── Legacy Timeline Builder (kept for backward compatibility) ───────────────
-// If you still need the ScrollTrigger-scrubbed version alongside Observer,
-// keep this export. Otherwise, use createProjectObserver above.
 
 export function createProjectTimeline(
   scrollTL: gsap.core.Timeline,

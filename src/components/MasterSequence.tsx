@@ -18,13 +18,14 @@ import BrandUnfoldedSection from "@/components/sections/BrandUnfoldedSection";
 import Footer from "@/components/sections/Footer";
 import { lockScroll, unlockScroll } from "@/utils/scrollLock";
 import { createExactCircleReveal } from "@/utils/createExactCircleReveal";
+import { masterTimelineStore } from "@/utils/masterTimeline";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ─── Constants ───────────────────────────────────────────────────────────────
+// ─── Constants ──────────────
 
 const T = {
-  REVEAL: 1.2,
+  REVEAL: 1,
   FADE: 0.2,
   CONTENT_DELAY: 0.6,
   TEXT_DELAY: 0.8,
@@ -43,8 +44,7 @@ const E = {
 
 type HeaderMode = "white" | "black";
 
-// ─── Config ──────────────────────────────────────────────────────────────────
-
+// ─── Config ─────────────
 const VIDEO_TRANSITIONS = [
   {
     label: "v1", videoIndex: 1, headerMode: "white" as HeaderMode,
@@ -93,7 +93,7 @@ const reveal = (
     }, `${label}+=${delay}`);
 };
 
-// ─── Ref Factory ─────────────────────────────────────────────────────────────
+// ─── Ref Factory ──────────────
 
 function useRefMap() {
   return {
@@ -111,8 +111,7 @@ function useRefMap() {
 
 type RefMap = ReturnType<typeof useRefMap>;
 
-// ─── Timeline Builders ───────────────────────────────────────────────────────
-
+// ─── Timeline Builders ────────
 function buildVideoTransitions(tl: gsap.core.Timeline, refs: RefMap, setActiveVideo: (v: number) => void) {
   VIDEO_TRANSITIONS.forEach(({ label, headerMode, fadeOut: outs, circle, circleColor, zCircle, zContent, videoIndex, fadeIn }) => {
     tl.addLabel(label).call(() => { setHeader(headerMode); setActiveVideo(videoIndex); }, undefined, label);
@@ -121,9 +120,6 @@ function buildVideoTransitions(tl: gsap.core.Timeline, refs: RefMap, setActiveVi
     createExactCircleReveal(tl, resolve(refs, circle), label, { color: circleColor, zIndex: zCircle });
     reveal(tl, resolve(refs, fadeIn.video), label, { zIndex: zContent, delay: T.CONTENT_DELAY });
     reveal(tl, resolve(refs, fadeIn.text), label, { zIndex: zContent, delay: T.TEXT_DELAY });
-
-
-
     gap(tl);
   });
 }
@@ -134,13 +130,10 @@ function buildVisionSequence(tl: gsap.core.Timeline, refs: RefMap, setActiveVide
   // Vision Section Reveal - BLACK HEADER
   tl.addLabel("vision_reveal").call(() => { setHeader("black"); setActiveVideo(-1); }, undefined, "vision_reveal");
 
-  // Fade out Video 3 elements
   fadeOut(tl, [refs.video3.text3.current], "vision_reveal");
 
   // Circle Reveal
   createExactCircleReveal(tl, circleWhite2.current, "vision_reveal", { color: "#ffffffff", zIndex: 26 });
-
-  // Reveal Content (Heading, Paragraph, Button)
   if (gridContent.current) {
     tl.set(gridContent.current, { zIndex: 29, pointerEvents: "none" }, "vision_reveal")
       .fromTo(gridContent.current, { y: 30, opacity: 0 },
@@ -156,7 +149,7 @@ function buildVisionSequence(tl: gsap.core.Timeline, refs: RefMap, setActiveVide
         `vision_reveal+=${T.SPLIT_DELAY + 0.3}`);
   }
 
-  gap(tl, 0.5);
+  gap(tl, 0.1);
 
   // Before Slider
   tl.addLabel("before_slider");
@@ -167,12 +160,12 @@ function buildSlider(tl: gsap.core.Timeline, refs: RefMap) {
   tl.call(() => setHeader("black"), undefined, "before_slider");
 
   // Reveal Horizontal Slider with Circle (Beige)
-  if (refs.slider.circleFinal.current) {
-    createExactCircleReveal(tl, refs.slider.circleFinal.current, "before_slider", {
-      color: "#ffffffff",
-      zIndex: 58,
-    });
-  }
+  // if (refs.slider.circleFinal.current) {
+  //   createExactCircleReveal(tl, refs.slider.circleFinal.current, "before_slider", {
+  //     color: "#ffffffff",
+  //     zIndex: 58,
+  //   });
+  // }
 
   createHorizontalSliderTimeline(
     tl,
@@ -195,10 +188,10 @@ function buildProjectSection(tl: gsap.core.Timeline, refs: RefMap) {
     }, "project_reveal");
   }
 
-  // Circle reveal into dark project background
+  // Circle reveal into project background
   if (circleReveal) {
     createExactCircleReveal(tl, circleReveal, "project_reveal", {
-      color: "#000", zIndex: 61,
+      color: "#f8f8f8ff", zIndex: 61,
     });
   }
 
@@ -211,11 +204,7 @@ function buildProjectSection(tl: gsap.core.Timeline, refs: RefMap) {
       }, "project_reveal+=0.5");
   }
 
-  // ── Internal stripe-stack transitions ──
-  // This appends all 4 project transitions to the master timeline
   createProjectTimeline(tl, refs.project.section);
-
-  // projects_complete label is set by createProjectTimeline
 }
 
 function buildBlogBrandFooter(tl: gsap.core.Timeline, refs: RefMap) {
@@ -310,6 +299,9 @@ export default function MasterSequence() {
           },
         });
 
+        console.log("Storing master timeline to masterTimelineStore");
+        masterTimelineStore.tl = master;
+
         // Compose the full scroll sequence
         buildVideoTransitions(master, refs, setActiveVideo);
         buildVisionSequence(master, refs, setActiveVideo);
@@ -357,7 +349,7 @@ export default function MasterSequence() {
           className="fixed inset-0 pointer-events-none opacity-0"
           style={{
             clipPath: "circle(0% at 50% 50%)",
-            backgroundColor: "#000",
+            backgroundColor: "#ffffffff",
             zIndex: 61,
             willChange: "clip-path",
           }}

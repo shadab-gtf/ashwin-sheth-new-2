@@ -347,31 +347,47 @@ export default function HorizontalSliderSection({
 
   // Function to skip to next section (project_reveal)
   const skipToNextSection = () => {
-    if (!masterTimelineStore.tl) return;
+    console.log("skipToNextSection called");
+    if (!masterTimelineStore.tl) {
+      console.error("Master timeline not found in store");
+      return;
+    }
 
     const tl = masterTimelineStore.tl;
     const labelTime = tl.labels["project_reveal"];
+    console.log("Target label 'project_reveal' time:", labelTime);
 
     if (labelTime !== undefined) {
       const totalDuration = tl.duration();
       const progress = labelTime / totalDuration;
 
-      // Find the ScrollTrigger instance
-      const st = ScrollTrigger.getAll().find(
-        (trigger) => trigger.vars.trigger === tl.scrollTrigger?.trigger
-      );
+      // Try to get ScrollTrigger directly from timeline first
+      let st = tl.scrollTrigger;
+
+      // Fallback to searching if not directly on timeline (though it should be for scrub)
+      if (!st) {
+        st = ScrollTrigger.getAll().find(
+          (trigger) => trigger.vars.trigger === tl.scrollTrigger?.trigger
+        );
+      }
 
       if (st) {
         const scrollStart = st.start;
         const scrollEnd = st.end;
         const targetScroll = scrollStart + (scrollEnd - scrollStart) * progress;
 
+        console.log("Scrolling to:", targetScroll, "Start:", scrollStart, "End:", scrollEnd, "Progress:", progress);
+
         gsap.to(window, {
           scrollTo: targetScroll,
           duration: 1.5,
           ease: "power2.inOut",
         });
+      } else {
+        console.error("ScrollTrigger instance not found");
       }
+    } else {
+      console.warn("Label 'project_reveal' not found");
     }
   };
 
@@ -384,7 +400,6 @@ export default function HorizontalSliderSection({
         window.getComputedStyle(sliderRef.current).opacity
       );
 
-      // Show skip button when section is visible (opacity > 0.5)
       setShowSkip(opacity > 0.5);
     };
 
@@ -412,7 +427,7 @@ export default function HorizontalSliderSection({
           <SkipButton
             targetLabel="project_reveal"
             text="Skip"
-            className="opacity-0 animate-fadeIn"
+            className="animate-fadeIn cursor-pointer"
             onClick={skipToNextSection}
           />
         )}

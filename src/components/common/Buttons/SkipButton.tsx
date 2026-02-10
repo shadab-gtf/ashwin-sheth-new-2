@@ -68,22 +68,22 @@ export default function SkipButton({
 
   return (
     <button
-            onClick={handleClick}
-            className={`
-               fixed bottom-6 items-center left-6 z-[999]
+      onClick={handleClick}
+      className={`
+               fixed bottom-14 items-center right-6 z-[999]
                 bg-[#1B4485] rounded-full text-white
                 px-5 py-2 text-xs tracking-[0.2em]
                 uppercase pointer-events-auto
                 transition-colors
-                opacity-0 animate-fadeIn
+                animate-fadeIn
                 ${className}
             `}
-            // <!-- aria-label for accessibility -->
-            aria-label={`Skip to ${targetLabel.replace(/_/g, " ")}`}
+      // <!-- aria-label for accessibility -->
+      aria-label={`Skip to ${targetLabel.replace(/_/g, " ")}`}
 
-        > 
-            {text} 
-            <CgChevronDoubleDown className="inline-block ml-1 animate-bounce" />
-        </button>
+    >
+      {text}
+      <CgChevronDoubleDown className="inline-block ml-1 animate-bounce" />
+    </button>
   );
 }
