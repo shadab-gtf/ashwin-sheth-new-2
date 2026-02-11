@@ -179,7 +179,7 @@ function buildProjectSection(tl: gsap.core.Timeline, refs: RefMap) {
   const circleReveal = refs.project.circleReveal.current;
 
   // ── Transition: slider → projects - BLACK HEADER ──
-  tl.addLabel("project_reveal").call(() => setHeader("black"), undefined, "project_reveal");
+  tl.addLabel("project_reveal").call(() => setHeader("white"), undefined, "project_reveal");
 
   // Fade out slider
   if (refs.slider.slider.current) {
