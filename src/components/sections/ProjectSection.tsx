@@ -317,7 +317,7 @@ export default function ProjectSection({ projectRef }: ProjectSectionProps) {
               {PROJECTS.map((project, i) => (
                 <div
                   key={`gallery-${i}`}
-                  className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${activeIndex === i ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                  className={`absolute inset-0 duration-200 ease-in-out ${activeIndex === i ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                     }`}
                   style={{ zIndex: activeIndex === i ? 10 : 0 }}
                 >

@@ -43,7 +43,16 @@ const E = {
 } as const;
 
 type HeaderMode = "white" | "black";
-
+const HEADER_COLOR_ZONES: [string, HeaderMode][] = [
+  ["v1", "white"],
+  ["v2", "white"],
+  ["vision_reveal", "black"],
+  ["before_slider", "black"],
+  ["project_reveal", "white"],
+  ["blog_reveal", "black"],
+  ["brand_reveal", "black"],
+  ["footer_reveal", "black"],
+];
 // ─── Config ─────────────
 const VIDEO_TRANSITIONS = [
   {
@@ -67,10 +76,12 @@ const VIDEO_TRANSITIONS = [
 const resolve = (refs: any, path: string): HTMLDivElement | null =>
   path.split(".").reduce((o, k) => o?.[k], refs)?.current ?? null;
 
+// const setHeader = (mode: HeaderMode) => {
+//   window.dispatchEvent(new Event(`header-${mode}`));
+// };
 const setHeader = (mode: HeaderMode) => {
   window.dispatchEvent(new Event(`header-${mode}`));
 };
-
 const gap = (tl: gsap.core.Timeline, d: number = T.GAP) => tl.to({}, { duration: d });
 
 const fadeOut = (tl: gsap.core.Timeline, targets: (HTMLElement | null)[], label: string) => {
@@ -128,7 +139,7 @@ function buildVisionSequence(tl: gsap.core.Timeline, refs: RefMap, setActiveVide
   const { gridContent, stats, circleWhite2 } = refs.earthSplit;
 
   // Vision Section Reveal - BLACK HEADER
-  tl.addLabel("vision_reveal").call(() => { setHeader("black"); setActiveVideo(-1); }, undefined, "vision_reveal");
+  tl.addLabel("vision_reveal")
 
   fadeOut(tl, [refs.video3.text3.current], "vision_reveal");
 
@@ -179,7 +190,7 @@ function buildProjectSection(tl: gsap.core.Timeline, refs: RefMap) {
   const circleReveal = refs.project.circleReveal.current;
 
   // ── Transition: slider → projects - BLACK HEADER ──
-  tl.addLabel("project_reveal").call(() => setHeader("white"), undefined, "project_reveal");
+  tl.addLabel("project_reveal");
 
   // Fade out slider
   if (refs.slider.slider.current) {
@@ -209,7 +220,7 @@ function buildProjectSection(tl: gsap.core.Timeline, refs: RefMap) {
 
 function buildBlogBrandFooter(tl: gsap.core.Timeline, refs: RefMap) {
   // ── Blog - BLACK HEADER ──
-  tl.addLabel("blog_reveal").call(() => setHeader("black"), undefined, "blog_reveal");
+  tl.addLabel("blog_reveal");
 
   // Fade out projects
   if (refs.project.section.current) {
@@ -227,7 +238,7 @@ function buildBlogBrandFooter(tl: gsap.core.Timeline, refs: RefMap) {
   gap(tl, 2.5);
 
   // ── Brand - BLACK HEADER ──
-  tl.addLabel("brand_reveal").call(() => setHeader("black"), undefined, "brand_reveal");
+  tl.addLabel("brand_reveal");
   if (refs.blog.blog.current) {
     tl.to(refs.blog.blog.current, {
       opacity: 0, scale: 0.92, y: 0, pointerEvents: "none", duration: 1.0, ease: E.OUT,
@@ -242,7 +253,7 @@ function buildBlogBrandFooter(tl: gsap.core.Timeline, refs: RefMap) {
   gap(tl, 2.0);
 
   // ── Footer - BLACK HEADER ──
-  tl.addLabel("footer_reveal").call(() => setHeader("black"), undefined, "footer_reveal");
+  tl.addLabel("footer_reveal");
   fadeOut(tl, [refs.brand.brand.current], "footer_reveal");
   if (refs.footer.footer.current) {
     tl.set(refs.footer.footer.current, { zIndex: 80 }, "footer_reveal")
@@ -270,6 +281,9 @@ export default function MasterSequence() {
     lockScroll();
 
     const ctx = gsap.context(() => {
+      ScrollTrigger.addEventListener("refreshInit", () => {
+        // Reserved for future use
+      });
       const introTL = createIntroTimeline(refs.intro);
 
       introTL.eventCallback("onComplete", () => {
@@ -281,7 +295,7 @@ export default function MasterSequence() {
 
       function buildMasterTimeline() {
         ScrollTrigger.refresh();
-
+        let lastHeaderMode: HeaderMode | null = null;
         const master = gsap.timeline({
           scrollTrigger: {
             trigger: containerRef.current,
@@ -291,6 +305,34 @@ export default function MasterSequence() {
             scrub: 1,
             anticipatePin: 1,
             invalidateOnRefresh: true,
+            onUpdate: (self) => {
+              const progress = self.progress;
+              const totalDuration = master.duration();
+              const currentTime = progress * totalDuration;
+              let activeMode: HeaderMode = "white";
+              for (let i = HEADER_COLOR_ZONES.length - 1; i >= 0; i--) {
+                const [label, mode] = HEADER_COLOR_ZONES[i];
+                const labelTime = master.labels[label];
+                if (labelTime !== undefined && currentTime >= labelTime) {
+                  activeMode = mode;
+                  break;
+                }
+              }
+              if (activeMode !== lastHeaderMode) {
+                setHeader(activeMode);
+                lastHeaderMode = activeMode;
+              }
+
+              // Only dispatch if the mode actually changed (performance optimization)
+              // if (activeMode !== lastHeaderMode) {
+              //   if (activeMode === "hidden") {
+              //     window.dispatchEvent(new Event("header-hidden"));
+              //   } else {
+              //     setHeader(activeMode);
+              //   }
+              //   lastHeaderMode = activeMode;
+              // }
+            },
             onRefresh: () => {
               const pinned = containerRef.current;
               if (pinned?.parentElement) pinned.parentElement.style.pointerEvents = "none";
