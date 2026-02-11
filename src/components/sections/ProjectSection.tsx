@@ -23,8 +23,8 @@ interface Project {
   slug: string;
   location: string;
   image: string;
-  mobile_image: string;
-  gallery: string[]; // Added gallery array of 5 images
+  // mobile_image: string;
+  gallery: string[];
   alt: string;
   description: string;
 }
@@ -35,11 +35,11 @@ const PROJECTS: Project[] = [
     slug: "/projects/sheth-avalon",
     location: "Thane",
     image: "/assets/images/projects/project-2.webp",
-    mobile_image: "/assets/project-card/av1.jpg",
+    // mobile_image: "/assets/project-card/av1.jpg",
     gallery: [
       "/assets/project-card/av1.jpg",
-      "/assets/project-card/av2.jpg",
-      "/assets/project-card/av3.jpg",
+      // "/assets/project-card/av2.jpg",
+      // "/assets/project-card/av3.jpg",
       // "/assets/project-card/av4.jpg",
       // "/assets/project-card/av5.jpg",
     ],
@@ -51,13 +51,13 @@ const PROJECTS: Project[] = [
     title: "Edmont",
     slug: "/projects/sheth-edmont",
     location: "Kandivali West",
-    image: "/assets/images/projects/project-3.webp",
-    mobile_image: "/assets/project-card/ed4.jpg",
+    image: "/assets/project-card/bg.jpg",
+    // mobile_image: "/assets/project-card/ed4.jpg",
     gallery: [
-      "/assets/project-card/ed1.jpg",
+      // "/assets/project-card/ed1.jpg",
       "/assets/project-card/ed2.jpg",
-      "/assets/project-card/ed3.jpg",
-      "/assets/project-card/ed4.jpg",
+      // "/assets/project-card/ed3.jpg",
+      // "/assets/project-card/ed4.jpg",
       // "/assets/project-card/ed5.jpg",
     ],
     alt: "Project 3",
@@ -69,9 +69,9 @@ const PROJECTS: Project[] = [
     slug: "/projects/sheth-vasant",
     location: "Thane West",
     image: "/assets/images/projects/project-4.webp",
-    mobile_image: "/assets/project-card/fern.jpg",
+    // mobile_image: "/assets/project-card/fern.jpg",
     gallery: [
-      "/assets/project-card/fern.jpg",
+      "/assets/project-card/fern2.jpg",
       // "/assets/project-card/fe2.jpg",
       // "/assets/project-card/fe3.jpg",
       // "/assets/project-card/fe4.jpg",
@@ -86,11 +86,11 @@ const PROJECTS: Project[] = [
     slug: "/projects/sheth-vasant",
     location: "Marine Drive",
     image: "/assets/images/projects/project-5.webp",
-    mobile_image: "/assets/project-card/m1.jpg",
+    // mobile_image: "/assets/project-card/m1.jpg",
     gallery: [
-      "/assets/project-card/m1.jpg",
-      "/assets/project-card/m2.jpg",
-      "/assets/project-card/m3.jpg",
+      // "/assets/project-card/m1.jpg",
+      // "/assets/project-card/m2.jpg",
+      // "/assets/project-card/m3.jpg",
       "/assets/project-card/m4.jpg",
       // "/assets/project-card/m5.jpg",
     ],
@@ -108,7 +108,7 @@ function ProjectGallery({ images, isActive, onIndexChange }: { images: string[];
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
-
+  const isSlider = images.length > 1;
   // Reset to 0 when project changes (optional, but cleaner)
   useEffect(() => {
     if (!isActive) {
@@ -120,11 +120,10 @@ function ProjectGallery({ images, isActive, onIndexChange }: { images: string[];
 
   // Auto-play effect
   useEffect(() => {
-    if (!isActive) return;
-
+    if (!isActive || images.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000); // 3 seconds per slide
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isActive, images.length]);
@@ -138,8 +137,45 @@ function ProjectGallery({ images, isActive, onIndexChange }: { images: string[];
 
   // Animation effect
   // We trigger GSAP whenever currentIndex changes
+  // useEffect(() => {
+  //   if (!isActive) return;
+
+  //   const currentSlide = slidesRef.current[currentIndex];
+  //   const prevIndex = (currentIndex - 1 + images.length) % images.length;
+  //   const prevSlide = slidesRef.current[prevIndex];
+
+  //   if (!currentSlide) return;
+
+  //   const tl = gsap.timeline({
+  //     defaults: { ease: "power3.inOut", duration: 1.2 },
+  //   });
+
+  //   // 1. Ensure current slide is on top and ready to reveal
+  //   gsap.set(currentSlide, { zIndex: 2 });
+  //   if (prevSlide) gsap.set(prevSlide, { zIndex: 1 });
+
+  //   // Reset current slide to hidden state (clipped from right)
+  //   tl.fromTo(
+  //     currentSlide,
+  //     { clipPath: "inset(0% 0% 0% 100%)" },
+  //     { clipPath: "inset(0% 0% 0% 0%)" }
+  //   );
+
+  //   // 3. Optional: Parallax inner image for extra "luxury"
+  //   const img = currentSlide.querySelector("img");
+  //   if (img) {
+  //     tl.fromTo(img, { scale: 1.1 }, { scale: 1, duration: 1.5 }, 0);
+  //   }
+
+  //   // 4. After animation, hide previous slide to reset stacking context
+  //   // We don't need to explicitly hide it if zIndex handles it, but good practice
+  //   if (prevSlide && prevSlide !== currentSlide) {
+  //     tl.set(prevSlide, { clipPath: "inset(0% 0% 0% 100%)", zIndex: 0 }, "-=0.2");
+  //   }
+
+  // }, [currentIndex, isActive, images.length]);
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive || !isSlider) return;
 
     const currentSlide = slidesRef.current[currentIndex];
     const prevIndex = (currentIndex - 1 + images.length) % images.length;
@@ -151,31 +187,24 @@ function ProjectGallery({ images, isActive, onIndexChange }: { images: string[];
       defaults: { ease: "power3.inOut", duration: 1.2 },
     });
 
-    // 1. Ensure current slide is on top and ready to reveal
     gsap.set(currentSlide, { zIndex: 2 });
     if (prevSlide) gsap.set(prevSlide, { zIndex: 1 });
 
-    // Reset current slide to hidden state (clipped from right)
     tl.fromTo(
       currentSlide,
       { clipPath: "inset(0% 0% 0% 100%)" },
       { clipPath: "inset(0% 0% 0% 0%)" }
     );
 
-    // 3. Optional: Parallax inner image for extra "luxury"
     const img = currentSlide.querySelector("img");
     if (img) {
       tl.fromTo(img, { scale: 1.1 }, { scale: 1, duration: 1.5 }, 0);
     }
 
-    // 4. After animation, hide previous slide to reset stacking context
-    // We don't need to explicitly hide it if zIndex handles it, but good practice
     if (prevSlide && prevSlide !== currentSlide) {
       tl.set(prevSlide, { clipPath: "inset(0% 0% 0% 100%)", zIndex: 0 }, "-=0.2");
     }
-
-  }, [currentIndex, isActive, images.length]);
-
+  }, [currentIndex, isActive, images.length, isSlider]);
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden bg-black/5">
       {images.map((src, i) => (
@@ -185,7 +214,7 @@ function ProjectGallery({ images, isActive, onIndexChange }: { images: string[];
           className="absolute inset-0 w-full h-full"
           style={{
             zIndex: i === 0 ? 1 : 0,
-            clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 0% 100%)",
+            clipPath: !isSlider ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 0% 100%)",
           }}
         >
           <Image
@@ -201,8 +230,6 @@ function ProjectGallery({ images, isActive, onIndexChange }: { images: string[];
           <div className="absolute inset-0 bg-black/10" />
         </div>
       ))}
-
-      {/* Custom Dots / Progress Bar REMOVED from here, moved to ProjectSection title area */}
     </div>
   );
 }
@@ -230,7 +257,8 @@ export default function ProjectSection({ projectRef }: ProjectSectionProps) {
     return () => window.removeEventListener("project-active-change", handler);
   }, []);
 
-  const getSrc = (p: Project) => (isMobile ? p.mobile_image : p.image);
+  // const getSrc = (p: Project) => (isMobile ? p.mobile_image : p.image);
+  const getSrc = (p: Project) => p.image;
 
   return (
     <section
@@ -311,17 +339,19 @@ export default function ProjectSection({ projectRef }: ProjectSectionProps) {
                   className="absolute inset-0 flex gap-5 flex-col justify-center"
                 >
                   <div data-project-title>
-                    <div className="flex justify-center gap-2 mb-10">
-                      {project.gallery.map((_, dotIndex) => (
-                        <div
-                          key={dotIndex}
-                          className={`rounded-full transition-all duration-500 ${dotIndex === activeGalleryIndex
-                            ? "w-2.5 h-2.5 bg-[#0E4194] shadow-sm"
-                            : "w-1.5 h-1.5 bg-black/60"
-                            }`}
-                        />
-                      ))}
-                    </div>
+                    {project.gallery.length > 1 && (
+                      <div className="flex justify-center gap-2 opacity-0 -mb-10">
+                        {project.gallery.map((_, dotIndex) => (
+                          <div
+                            key={dotIndex}
+                            className={`rounded-full transition-all duration-500 ${dotIndex === activeGalleryIndex
+                              ? "w-2.5 h-2.5 bg-[#0E4194] shadow-sm"
+                              : "w-1.5 h-1.5 bg-black/60"
+                              }`}
+                          />
+                        ))}
+                      </div>
+                    )}
                     <h2 className="text-black text-[32px] font-light tracking-tight leading-none mb-2">
                       {project.title}
                     </h2>
